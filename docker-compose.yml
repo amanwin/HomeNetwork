@@ -1,0 +1,46 @@
+services:
+
+#---------------------------------------------------------------------#
+#     NGINX - Reverse proxy.                                          #
+#---------------------------------------------------------------------#
+  web:
+    container_name: nginx-reverse-proxy
+    image: nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - /home/amanpi5/HomeNetwork/stacks/nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+
+#---------------------------------------------------------------------#
+#     Homarr - A simple, yet powerful dashboard for your server.      #
+#---------------------------------------------------------------------#
+
+  homarr:
+    container_name: homarr
+    image: ghcr.io/ajnart/homarr:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - /home/amanpi5/HomeNetwork/stacks/homarr/configs:/app/data/configs
+      - /home/amanpi5/HomeNetwork/stacks/homarr/icons:/app/public/icons
+      - /home/amanpi5/HomeNetwork/stacks/homarr/data:/data
+    ports:
+      - '7575:7575'
+
+
+#---------------------------------------------------------------------#
+#     Dash - a modern server dashboard.                             #
+#---------------------------------------------------------------------#
+
+  dash:
+    image: mauricenino/dashdot:latest
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - '3001:3001'
+    volumes:
+      - /:/mnt/host:ro
+    restart: unless-stopped
+    privileged: true 
