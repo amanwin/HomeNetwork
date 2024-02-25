@@ -1,5 +1,5 @@
 keys.json
-**/vm-data/
-**/icons/
-**/configs/
-**/data/
+**/vm-data/*.*
+**/icons/*.*
+**/configs/*.*
+**/data/*.*
