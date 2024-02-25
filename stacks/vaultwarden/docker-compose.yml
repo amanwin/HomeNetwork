@@ -1,0 +1,7 @@
+services:
+  container_name: vaultwarden
+  volumes:
+    - /home/amanpi5/HomeNetwork/stacks/vaultwarden/vw-data/:/data/
+  ports:
+    - '8080:80'
+  image: vaultwarden/server:latest
