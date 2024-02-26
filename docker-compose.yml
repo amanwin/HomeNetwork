@@ -1,6 +1,21 @@
 services:
 
 #---------------------------------------------------------------------#
+#     Portainer                                                       #
+#---------------------------------------------------------------------#
+
+  portainer-ce:
+    image: 'portainer/portainer-ce:latest'
+    container_name: portainer
+    ports:
+      - '9000:9000'
+      - '8000:8000'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '//home/amanpi5/HomeNetwork/stacks/portainer:/data'
+    restart: always
+
+#---------------------------------------------------------------------#
 #     NGINX - Reverse proxy.                                          #
 #---------------------------------------------------------------------#
   web:
@@ -56,3 +71,40 @@ services:
       ports:
         - '8080:80'
       image: vaultwarden/server:latest
+
+
+#---------------------------------------------------------------------#
+#     Postgres and NextCloud                                          #
+#---------------------------------------------------------------------#
+
+
+  db:
+    image: postgres
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD=ext$loud
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=nextcloud
+    restart: unless-stopped
+    volumes:
+      - /home/amanpi5/HomeNetwork/stacks/postgres/db_data:/var/lib/postgresql/data
+    ports:
+      - '5433:5432'
+
+  app:
+    image: nextcloud
+    container_name: nextcloud
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PASSWORD=ext$loud
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=nextcloud
+      - NEXTCLOUD_TRUSTED_DOMAINS=http://192.168.0.144:8081,https://cloud.harliv.in
+    ports:
+      - 8081:80
+    restart: unless-stopped
+    volumes:
+      - /media/usbdrive:/var/www/html/data
+    depends_on:
+      - db
+
